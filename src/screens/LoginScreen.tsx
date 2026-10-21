@@ -105,7 +105,7 @@ export function LoginScreen() {
         </Button>
       </form>
 
-      <FootNote icon="shield">Jangan bagikan kata sandimu ke siapa pun, termasuk yang mengaku petugas DompetBijak.</FootNote>
+      <FootNote icon="shield">Jangan bagikan kata sandimu ke siapa pun, termasuk yang mengaku petugas Unbound.</FootNote>
     </AuthLayout>
   )
 }

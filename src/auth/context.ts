@@ -14,3 +14,11 @@ export function useAuth() {
   if (!state) throw new Error('useAuth must be used inside <AuthProvider>')
   return state
 }
+
+/**
+ * True while the account still has the temporary password it was created with
+ * (`app_metadata.must_change_password`). The database clears the flag when the password changes.
+ */
+export function mustChangePassword(session: Session | null) {
+  return session?.user.app_metadata.must_change_password === true
+}

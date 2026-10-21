@@ -24,3 +24,8 @@ export function passwordError(value: string, { isNew = false } = {}) {
   // Supabase hashes passwords with bcrypt, which only uses the first 72 bytes.
   if (isNew && new TextEncoder().encode(value).length > 72) return 'Kata sandi terlalu panjang (maksimal 72 karakter).'
 }
+
+export function passwordConfirmationError(password: string, confirmation: string) {
+  if (!confirmation) return 'Ketik ulang kata sandi barumu.'
+  if (confirmation !== password) return 'Kata sandi tidak sama.'
+}

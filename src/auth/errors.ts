@@ -7,6 +7,8 @@ const messages: Record<string, string> = {
   user_already_exists: 'Email ini sudah terdaftar. Silakan masuk.',
   email_exists: 'Email ini sudah terdaftar. Silakan masuk.',
   weak_password: 'Kata sandi terlalu mudah ditebak. Gabungkan huruf, angka, dan simbol.',
+  same_password: 'Kata sandi baru harus berbeda dari kata sandi lama.',
+  reauthentication_needed: 'Demi keamanan, keluar lalu masuk lagi sebelum mengganti kata sandi.',
   over_email_send_rate_limit: 'Terlalu banyak email dikirim. Tunggu beberapa menit, lalu coba lagi.',
   over_request_rate_limit: 'Terlalu banyak percobaan. Tunggu sebentar, lalu coba lagi.',
   signup_disabled: 'Pendaftaran akun baru sedang ditutup.',

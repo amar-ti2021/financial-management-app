@@ -18,7 +18,7 @@ export function AuthLayout({ title, description, children, footer, className }: 
       <main className="flex flex-1 flex-col px-5 pt-10 pb-8">
         <div className="flex items-center gap-2.5">
           <IconTile icon="verified_user" tone="primary" shape="rounded" size="lg" filled />
-          <span className="text-title-lg font-bold text-on-surface">DompetBijak</span>
+          <span className="text-title-lg font-bold text-on-surface">Unbound</span>
         </div>
         <PageIntro title={title} description={description} className="mt-8" />
         <div className="mt-7 flex flex-col gap-5">{children}</div>

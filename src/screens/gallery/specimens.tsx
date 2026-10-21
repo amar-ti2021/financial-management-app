@@ -472,7 +472,7 @@ export const specimens: Specimen[] = [
     description: 'Banner tips, info, atau peringatan, dengan ikon polos atau di dalam tile.',
     demo: (
       <Variant label="tone · iconStyle · size · aside" stack>
-        <Callout icon="shield" title="Tips Aman DompetBijak">
+        <Callout icon="shield" title="Tips Aman Unbound">
           tone neutral, ikon polos.
         </Callout>
         <Callout tone="success" icon="health_and_safety" iconFilled title="Tips Bebas Cemas">

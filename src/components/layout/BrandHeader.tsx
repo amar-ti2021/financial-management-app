@@ -19,7 +19,7 @@ export function BrandHeader({
   userName,
   avatarSrc,
   profileTo = '/profil',
-  title = 'DompetBijak',
+  title = 'Unbound',
   subtitle,
   action,
 }: BrandHeaderProps) {

@@ -1,4 +1,4 @@
-# DompetBijak — app
+# Unbound - Financial Management App
 
 React 19 + TypeScript + Vite + Tailwind CSS v4. Mobile-first (max 448px), Bahasa Indonesia UI.
 Every component is hand-sliced from `../design-ref/` (HTML + `DESIGN.md`).
@@ -84,10 +84,28 @@ It uses the publishable key, so every query runs under RLS as the signed-in user
 | `/masuk` | Sign in: Google, or email + password |
 | `/daftar` | Sign up: Google, or name + email + password, then "Cek emailmu" |
 | `/auth/callback` | Return point for Google and email confirmation links |
+| `/ganti-kata-sandi` | Forced password change for accounts created with a temporary password |
 
-`src/auth/` holds the session context (`useAuth()`), the `GuestOnly` route guard, Indonesian
-error messages for Supabase error codes, and form validation. Sign-up passes `full_name`,
-which the `on_auth_user_created` trigger copies into `public.profiles`.
+`src/auth/` holds the session context (`useAuth()`), the `GuestOnly` and `PasswordChangeGate`
+route guards, Indonesian error messages for Supabase error codes, and form validation. Sign-up
+passes `full_name`, which the `on_auth_user_created` trigger copies into `public.profiles`.
+
+### Roles and temporary passwords
+
+- **Roles** live in `public.user_roles` (enum `app_role`, currently only `superadmin`). The app
+  can read them but never write them; grant or revoke in the SQL editor:
+  `insert into public.user_roles (user_id, role) select id, 'superadmin' from auth.users where email = '…';`
+- **Superadmin** reads and edits every row of `public.profiles` (the same columns users may
+  edit). RLS policies call `private.is_superadmin()`; give every new table with user data a
+  "Superadmins can …" policy using `(select private.is_superadmin())`.
+- **Temporary password:** create the account in Authentication → Users (or with the Admin API)
+  with *Auto Confirm User*, then set `app_metadata.must_change_password = true` (Admin API:
+  `app_metadata: { must_change_password: true }`). `PasswordChangeGate` keeps that account on
+  `/ganti-kata-sandi` until it sets its own password. The `on_auth_user_password_changed`
+  trigger removes the flag only when the password really changes, and superadmin rights stay
+  off while the flag is set, so a leaked temporary password grants nothing extra.
+- Use a random temporary password, never a guessable one: whoever signs in first with it
+  can set the real password and take over the account.
 
 Supabase dashboard settings the flows depend on:
 
