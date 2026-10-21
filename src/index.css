@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+
+/*
+ * DompetBijak design tokens, taken from the design-ref screens
+ * (Material 3 palette seeded from emerald #047857) and DESIGN.md
+ * (typography, radius, elevation).
+ */
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Surfaces */
+  --color-background: #faf8ff;
+  --color-on-background: #131b2e;
+  --color-surface: #faf8ff;
+  --color-surface-bright: #faf8ff;
+  --color-surface-dim: #d2d9f4;
+  --color-surface-tint: #006c4e;
+  --color-surface-variant: #dae2fd;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f3ff;
+  --color-surface-container: #eaedff;
+  --color-surface-container-high: #e2e7ff;
+  --color-surface-container-highest: #dae2fd;
+  --color-on-surface: #131b2e;
+  --color-on-surface-variant: #3e4943;
+  --color-inverse-surface: #283044;
+  --color-inverse-on-surface: #eef0ff;
+  --color-outline: #6e7a73;
+  --color-outline-variant: #bdc9c1;
+
+  /* Primary */
+  --color-primary: #005d42;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #047857;
+  --color-on-primary-container: #9ffdd3;
+  --color-primary-fixed: #97f5cc;
+  --color-primary-fixed-dim: #7bd8b1;
+  --color-on-primary-fixed: #002115;
+  --color-on-primary-fixed-variant: #00513a;
+  --color-inverse-primary: #7bd8b1;
+
+  /* Secondary */
+  --color-secondary: #006c49;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #6cf8bb;
+  --color-on-secondary-container: #00714d;
+  --color-secondary-fixed: #6ffbbe;
+  --color-secondary-fixed-dim: #4edea3;
+  --color-on-secondary-fixed: #002113;
+  --color-on-secondary-fixed-variant: #005236;
+
+  /* Tertiary */
+  --color-tertiary: #734700;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #945d00;
+  --color-on-tertiary-container: #ffe6cc;
+  --color-tertiary-fixed: #ffddb8;
+  --color-tertiary-fixed-dim: #ffb95f;
+  --color-on-tertiary-fixed: #2a1700;
+  --color-on-tertiary-fixed-variant: #653e00;
+
+  /* Error */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Typography scale (DESIGN.md) */
+  --text-display: 40px;
+  --text-display--line-height: 48px;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 800;
+  --text-display-mobile: 32px;
+  --text-display-mobile--line-height: 40px;
+  --text-display-mobile--letter-spacing: -0.01em;
+  --text-display-mobile--font-weight: 800;
+  --text-headline-lg: 28px;
+  --text-headline-lg--line-height: 36px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 700;
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-md--font-weight: 700;
+  --text-headline-sm: 20px;
+  --text-headline-sm--line-height: 28px;
+  --text-headline-sm--font-weight: 600;
+  --text-title-lg: 18px;
+  --text-title-lg--line-height: 26px;
+  --text-title-lg--font-weight: 600;
+  --text-title-md: 16px;
+  --text-title-md--line-height: 24px;
+  --text-title-md--font-weight: 600;
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-label-lg: 16px;
+  --text-label-lg--line-height: 20px;
+  --text-label-lg--letter-spacing: 0.01em;
+  --text-label-lg--font-weight: 600;
+  --text-label-md: 14px;
+  --text-label-md--line-height: 18px;
+  --text-label-md--letter-spacing: 0.01em;
+  --text-label-md--font-weight: 600;
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--letter-spacing: 0.02em;
+  --text-label-sm--font-weight: 600;
+
+  /* Elevation tiers (DESIGN.md) */
+  --shadow-card: 0 2px 8px -2px rgb(15 23 42 / 0.06), 0 1px 4px -1px rgb(15 23 42 / 0.04);
+  --shadow-raised: 0 10px 25px -5px rgb(15 23 42 / 0.1), 0 4px 10px -2px rgb(15 23 42 / 0.04);
+  --shadow-dock: 0 -8px 20px rgb(15 23 42 / 0.08);
+  --shadow-cta: 0 4px 14px 0 rgb(4 120 87 / 0.39);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface antialiased;
+    min-height: 100dvh;
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input[type='range'] {
+    accent-color: var(--color-primary-container);
+  }
+}
+
+@utility material-symbol {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  vertical-align: middle;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: max(0.25rem, env(safe-area-inset-bottom));
+}
