@@ -7,11 +7,12 @@ import { RequireAuth } from '@/auth/RequireAuth'
 import { AuthCallbackScreen } from '@/screens/AuthCallbackScreen'
 import { ChangePasswordScreen } from '@/screens/ChangePasswordScreen'
 import { ComponentGalleryScreen } from '@/screens/ComponentGalleryScreen'
+import { DashboardScreen } from '@/screens/DashboardScreen'
 import { LoginScreen } from '@/screens/LoginScreen'
 import { RegisterScreen } from '@/screens/RegisterScreen'
 
-// Routed for now: the component catalog and the auth screens. The design screens in
-// src/screens/ are kept (and still type-checked); add their routes back inside RequireAuth.
+// Routed for now: Beranda, the component catalog and the auth screens. Add new pages
+// inside RequireAuth.
 const router = createBrowserRouter([
   {
     // Accounts on a temporary password are held at /ganti-kata-sandi until they change it.
@@ -30,7 +31,8 @@ const router = createBrowserRouter([
       {
         element: <RequireAuth />,
         children: [
-          { path: '/', element: <ComponentGalleryScreen /> },
+          { path: '/', element: <DashboardScreen /> },
+          { path: 'komponen', element: <ComponentGalleryScreen /> },
           { path: 'ganti-kata-sandi', element: <ChangePasswordScreen /> },
           { path: '*', element: <Navigate to="/" replace /> },
         ],

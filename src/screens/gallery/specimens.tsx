@@ -105,12 +105,19 @@ export type Specimen = {
 
 const noop = () => {}
 
-// The real tabs. The catalog lives at "/", so "Beranda" shows as the active tab.
+// The tabs as Beranda shows them now: no pages behind them yet, so no links.
 const demoTabs: BottomNavItem[] = [
+  { label: 'Beranda', icon: 'home', active: true },
+  { label: 'Catat', icon: 'add_circle' },
+  { label: 'Pinjaman', icon: 'credit_card' },
+  { label: 'Kalkulator', icon: 'calculate' },
+]
+
+// The same tabs once their pages exist. The catalog lives at /komponen, so "Lainnya" is active here.
+const linkedTabs: BottomNavItem[] = [
   { to: '/', label: 'Beranda', icon: 'home', end: true },
-  { to: '/catat/pengeluaran', label: 'Catat', icon: 'add_circle' },
   { to: '/pinjaman', label: 'Pinjaman', icon: 'credit_card' },
-  { to: '/kalkulator', label: 'Kalkulator', icon: 'calculate' },
+  { to: '/komponen', label: 'Lainnya', icon: 'widgets' },
 ]
 
 const tileTones: IconTileTone[] = [
@@ -728,7 +735,7 @@ export const specimens: Specimen[] = [
   {
     name: 'BrandHeader',
     group: 'layout',
-    description: 'App bar tab utama: avatar (ke profil), nama brand, baris status, satu aksi.',
+    description: 'App bar tab utama: avatar (link ke profil bila ada profileTo), nama brand, baris status, satu aksi.',
     demo: (
       <PreviewFrame>
         <BrandHeader
@@ -801,9 +808,18 @@ export const specimens: Specimen[] = [
     group: 'layout',
     description: 'Tab bar tetap (Tier 2). Tab aktif mendapat pill tonal dan ikon filled.',
     demo: (
-      <PreviewFrame className="h-20">
-        <BottomNav items={demoTabs} />
-      </PreviewFrame>
+      <>
+        <Variant label="tanpa to: tampil tapi belum ke mana-mana · active" stack>
+          <PreviewFrame className="h-20">
+            <BottomNav items={demoTabs} />
+          </PreviewFrame>
+        </Variant>
+        <Variant label="dengan to: NavLink, tab aktif mengikuti URL" stack>
+          <PreviewFrame className="h-20">
+            <BottomNav items={linkedTabs} />
+          </PreviewFrame>
+        </Variant>
+      </>
     ),
   },
   {

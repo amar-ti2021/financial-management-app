@@ -5,7 +5,7 @@ import { Avatar } from '@/components/ui'
 export type BrandHeaderProps = {
   userName: string
   avatarSrc?: string
-  /** Where tapping the avatar goes (usually the profile). */
+  /** Where tapping the avatar goes (usually the profile). Without it the avatar is not a link. */
   profileTo?: string
   title?: string
   /** Line under the brand name, e.g. a "Keuangan Aman" status. */
@@ -18,7 +18,7 @@ export type BrandHeaderProps = {
 export function BrandHeader({
   userName,
   avatarSrc,
-  profileTo = '/profil',
+  profileTo,
   title = 'Unbound',
   subtitle,
   action,
@@ -26,9 +26,13 @@ export function BrandHeader({
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between bg-surface/95 px-4 backdrop-blur-md">
       <div className="flex min-w-0 items-center gap-2">
-        <Link to={profileTo} aria-label="Buka profil" className="rounded-full">
+        {profileTo ? (
+          <Link to={profileTo} aria-label="Buka profil" className="rounded-full">
+            <Avatar name={userName} src={avatarSrc} />
+          </Link>
+        ) : (
           <Avatar name={userName} src={avatarSrc} />
-        </Link>
+        )}
         <div className="flex min-w-0 flex-col">
           <span className="text-title-lg font-bold text-on-surface">{title}</span>
           {subtitle && <span className="text-label-sm text-primary">{subtitle}</span>}

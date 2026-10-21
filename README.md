@@ -20,9 +20,10 @@ src/
     form/              inputs and selection controls
     layout/            shell, headers, bottom nav, sticky bars
     finance/           domain cards (balance, debt, loan, projection, profile)
-  screens/             one file per design screen, composed only from components
-    gallery/           specimens for the component catalog (/) — add an entry for every new component
-  data/mock.ts         sample data from the designs
+  screens/             one file per routed page, composed only from components
+    gallery/           specimens for the component catalog (/komponen) — add an entry for every new component
+  hooks/               useProfile (signed-in user's profile row), useGoBack
+  data/mock.ts         sample data from the designs (catalog only)
   lib/                 cn() (clsx + tailwind-merge), Rupiah/date formatting
 ```
 
@@ -39,16 +40,22 @@ Import from the folder barrels: `import { Button, Card } from '@/components/ui'`
 
 ## Routes
 
-Every page needs a signed-in user except the auth screens (see [Auth](#auth)). For now the app
-only routes the component catalog: `/` shows every component with its variants, and any other
-URL redirects there. Links inside the catalog previews are inert.
+Every page needs a signed-in user except the auth screens (see [Auth](#auth)).
 
-The design screens are kept in `src/screens/` (and still type-checked) but are not routed.
-To show one again, add its route in `src/App.tsx`, inside the `RequireAuth` group:
+| Route | Screen |
+| --- | --- |
+| `/` | Beranda (`DashboardScreen`): app bar and greeting so far; the bottom tabs don't link anywhere yet |
+| `/komponen` | Component catalog: every component with its variants (links in previews are inert) |
 
-| Design | Screen file | Former route |
+Any other URL redirects to `/`.
+
+The other design screens, sliced with mock data, live in `../screens/`, outside this repo and
+not type-checked. To build one out, copy it into `src/screens/`, replace the mock data, and add
+its route in `src/App.tsx` inside the `RequireAuth` group:
+
+| Design | Screen file | Route |
 | --- | --- | --- |
-| dompet_utama_beranda | `HomeScreen.tsx` | `/` |
+| dompet_utama_beranda | `HomeScreen.tsx` (full mock version of `DashboardScreen`) | `/` |
 | catat_pengeluaran_simpel | `ExpenseFormScreen.tsx` | `/catat/pengeluaran` |
 | catat_pemasukan_simpel | `IncomeFormScreen.tsx` | `/catat/pemasukan` |
 | catat_hutang_simpel | `DebtFormScreen.tsx` | `/catat/hutang` |
@@ -58,8 +65,10 @@ To show one again, add its route in `src/App.tsx`, inside the `RequireAuth` grou
 | matriks_arus_kas_jadwal_bayar_hutang | `ProjectionScreen.tsx` | `/proyeksi` |
 | profil_pengaturan_akun | `ProfileScreen.tsx` | `/profil` |
 
-The tab screens shared a bottom nav through a layout route; restore it with
-`<><Outlet /><BottomNav items={tabs} /></>` around `/`, `/pinjaman`, `/kalkulator` and `/profil`.
+The tabs in `DashboardScreen` have no `to` yet, so `BottomNav` renders them without links. Once
+their pages exist, give each tab a `to` and move the nav into a layout route,
+`<><Outlet /><BottomNav items={tabs} /></>`, around `/`, `/pinjaman`, `/kalkulator` and `/profil`.
+`BrandHeader` links the avatar only when given `profileTo` (e.g. `/profil`).
 
 ## Supabase
 
