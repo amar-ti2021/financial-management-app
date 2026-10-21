@@ -1,0 +1,19 @@
+# CI (.github/workflows/deploy.yml) builds the site and uploads `dist` with
+# `netlify deploy --no-build`. The [build] section keeps a local `netlify deploy`
+# or a Netlify-hosted build consistent with that. Node version comes from .nvmrc.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Single-page app: unknown paths fall back to index.html so React Router can
+# handle them. Real files (e.g. /assets/*) are still served first.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Vite fingerprints everything in /assets, so those files can be cached forever.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

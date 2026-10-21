@@ -60,6 +60,33 @@ To show one again, add its route in `src/App.tsx`:
 The tab screens shared a bottom nav through a layout route; restore it with
 `<><Outlet /><BottomNav items={tabs} /></>` around `/`, `/pinjaman`, `/kalkulator` and `/profil`.
 
+## Deployment (Netlify)
+
+`.github/workflows/deploy.yml` runs on GitHub Actions:
+
+| Event | Lint + build | Deploy |
+| --- | --- | --- |
+| Pull request (from this repo) | yes | preview at `pr-<number>--<site>.netlify.app` |
+| Push to `main` | yes | production |
+| Manual run (`workflow_dispatch`) | yes | production when run on `main` |
+
+The deploy URL appears on the PR as a "View deployment" link and in the run summary.
+`netlify.toml` adds the SPA fallback and long-term caching for `/assets/*`. `.nvmrc` sets the
+Node version for both CI and Netlify.
+
+One-time setup:
+
+1. In Netlify, create a project **without** connecting the Git repo (Add new project → Deploy
+   manually), or run `npx netlify-cli sites:create`. If the repo is already linked, set builds to
+   *Stopped*, otherwise every push deploys twice.
+2. Copy the **Project ID** (Project configuration → General → Project details).
+3. Create a personal access token (User settings → Applications → Personal access tokens).
+4. In GitHub → Settings → Secrets and variables → Actions, add the repository secrets
+   `NETLIFY_SITE_ID` and `NETLIFY_AUTH_TOKEN`.
+
+The `production` environment is created automatically on the first deploy; add required
+reviewers to it in GitHub → Settings → Environments if production deploys need approval.
+
 ## Design notes
 
 - Colors follow the emerald palette used by every screen's HTML, not the blue values written in `DESIGN.md`.
