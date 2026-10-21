@@ -62,30 +62,26 @@ The tab screens shared a bottom nav through a layout route; restore it with
 
 ## Deployment (Netlify)
 
-`.github/workflows/deploy.yml` runs on GitHub Actions:
+The Netlify project is connected to this GitHub repo, so Netlify builds and deploys on its own:
 
-| Event | Lint + build | Deploy |
+| Event | GitHub Actions (`.github/workflows/ci.yml`) | Netlify |
 | --- | --- | --- |
-| Pull request (from this repo) | yes | preview at `pr-<number>--<site>.netlify.app` |
-| Push to `main` | yes | production |
-| Manual run (`workflow_dispatch`) | yes | production when run on `main` |
+| Pull request | lint + build check | deploy preview, linked on the PR |
+| Push to `main` | lint + build check | production deploy |
 
-The deploy URL appears on the PR as a "View deployment" link and in the run summary.
-`netlify.toml` adds the SPA fallback and long-term caching for `/assets/*`. `.nvmrc` sets the
-Node version for both CI and Netlify.
+`netlify.toml` holds the build settings (`npm run lint && npm run build`, publish `dist`), the
+SPA fallback and long-term caching for `/assets/*`. `.nvmrc` sets the Node version for both
+GitHub Actions and Netlify. No secrets or tokens are needed.
 
-One-time setup:
+Netlify checks to confirm once (Project configuration → Build & deploy → Continuous deployment):
 
-1. In Netlify, create a project **without** connecting the Git repo (Add new project → Deploy
-   manually), or run `npx netlify-cli sites:create`. If the repo is already linked, set builds to
-   *Stopped*, otherwise every push deploys twice.
-2. Copy the **Project ID** (Project configuration → General → Project details).
-3. Create a personal access token (User settings → Applications → Personal access tokens).
-4. In GitHub → Settings → Secrets and variables → Actions, add the repository secrets
-   `NETLIFY_SITE_ID` and `NETLIFY_AUTH_TOKEN`.
+- Build status is *Active* and the production branch is `main`.
+- Deploy Previews are enabled for pull requests.
+- Base directory is empty (the repo root is the app); `netlify.toml` overrides the UI build
+  command and publish directory.
 
-The `production` environment is created automatically on the first deploy; add required
-reviewers to it in GitHub → Settings → Environments if production deploys need approval.
+To block merging when checks fail, add the "Lint & build" check (and optionally Netlify's deploy
+preview check) as required in GitHub → Settings → Branches → branch protection for `main`.
 
 ## Design notes
 

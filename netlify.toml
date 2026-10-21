@@ -1,8 +1,8 @@
-# CI (.github/workflows/deploy.yml) builds the site and uploads `dist` with
-# `netlify deploy --no-build`. The [build] section keeps a local `netlify deploy`
-# or a Netlify-hosted build consistent with that. Node version comes from .nvmrc.
+# Netlify builds and deploys this repo through its Git integration:
+# production from main, deploy previews for pull requests. Node version comes from .nvmrc.
 [build]
-  command = "npm run build"
+  # Lint first so a failing check never reaches production.
+  command = "npm run lint && npm run build"
   publish = "dist"
 
 # Single-page app: unknown paths fall back to index.html so React Router can
