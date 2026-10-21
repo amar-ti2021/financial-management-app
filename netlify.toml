@@ -5,6 +5,13 @@
   command = "npm run lint && npm run build"
   publish = "dist"
 
+[build.environment]
+  # The Supabase URL and publishable key are public by design: they ship in the browser
+  # bundle and only grant what RLS allows, so Netlify's secret scanning must not fail the
+  # build on them. Every other key is still scanned, and vite.config.ts fails the build
+  # if a real secret key is ever put into a VITE_ variable.
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_PUBLISHABLE_KEY"
+
 # Single-page app: unknown paths fall back to index.html so React Router can
 # handle them. Real files (e.g. /assets/*) are still served first.
 [[redirects]]
