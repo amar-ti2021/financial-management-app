@@ -28,6 +28,8 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: string
   iconFilled?: boolean
   fullWidth?: boolean
+  /** Shows a spinner in place of the icon and blocks further clicks. */
+  loading?: boolean
 }
 
 export function Button({
@@ -36,6 +38,8 @@ export function Button({
   icon,
   iconFilled,
   fullWidth,
+  loading = false,
+  disabled,
   className,
   children,
   type = 'button',
@@ -44,6 +48,8 @@ export function Button({
   return (
     <button
       type={type}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
       className={cn(
         'inline-flex items-center justify-center transition-all active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50',
         sizes[size],
@@ -54,7 +60,11 @@ export function Button({
       )}
       {...rest}
     >
-      {icon && <Icon name={icon} filled={iconFilled} size={iconSizes[size]} />}
+      {loading ? (
+        <Icon name="progress_activity" size={iconSizes[size]} className="animate-spin" />
+      ) : (
+        icon && <Icon name={icon} filled={iconFilled} size={iconSizes[size]} />
+      )}
       {children}
     </button>
   )

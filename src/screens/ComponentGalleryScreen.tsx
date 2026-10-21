@@ -1,9 +1,37 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useAuth } from '@/auth/context'
 import { TextField } from '@/components/form'
 import { MobileShell, PageHeader } from '@/components/layout'
-import { Badge, ChipGroup, SectionHeader } from '@/components/ui'
+import { Avatar, Badge, Button, ChipGroup, IconButton, SectionHeader } from '@/components/ui'
+import { supabase } from '@/lib/supabase'
 import { SpecimenCard } from './gallery/Specimen'
 import { groups, specimens, type GroupKey } from './gallery/specimens'
+
+/** Header slot: "Masuk" for guests, avatar + sign-out once signed in. */
+function AccountAction() {
+  const navigate = useNavigate()
+  const { session, loading } = useAuth()
+  if (loading) return null
+
+  if (!session) {
+    return (
+      <Button size="sm" variant="secondary" icon="login" onClick={() => navigate('/masuk')}>
+        Masuk
+      </Button>
+    )
+  }
+
+  // Google fills name / avatar_url; email sign-up fills full_name.
+  const meta = session.user.user_metadata
+  const name: string = meta.full_name ?? meta.name ?? session.user.email ?? 'Akun'
+  return (
+    <div className="flex items-center gap-1" title={name}>
+      <Avatar name={name} src={meta.avatar_url ?? meta.picture} />
+      <IconButton icon="logout" label="Keluar" onClick={() => supabase.auth.signOut()} />
+    </div>
+  )
+}
 
 /** Living catalog of every reusable component, rendered with its variants. */
 export function ComponentGalleryScreen() {
@@ -25,6 +53,7 @@ export function ComponentGalleryScreen() {
         title="Katalog Komponen"
         subtitle={`${specimens.length} komponen reusable dari design-ref`}
         onBack={false}
+        actions={<AccountAction />}
       >
         <ChipGroup
           label="Kelompok komponen"

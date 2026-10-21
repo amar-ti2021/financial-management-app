@@ -19,8 +19,9 @@ import {
   SavingsCompareCard,
   TransactionItem,
 } from '@/components/finance'
-import { OptionCard, TextField } from '@/components/form'
+import { OptionCard, PasswordField, TextField } from '@/components/form'
 import {
+  AuthLayout,
   BottomNav,
   BrandHeader,
   FloatingActionBar,
@@ -37,7 +38,9 @@ import {
   Callout,
   Card,
   Chip,
+  Divider,
   FootNote,
+  GoogleButton,
   Icon,
   IconButton,
   IconTile,
@@ -171,15 +174,41 @@ export const specimens: Specimen[] = [
             XS
           </Button>
         </Variant>
-        <Variant label="fullWidth · disabled" stack>
+        <Variant label="fullWidth · loading · disabled" stack>
           <Button size="lg" fullWidth icon="check_circle" iconFilled>
             Simpan Pengeluaran
+          </Button>
+          <Button size="lg" fullWidth loading>
+            Menyimpan…
           </Button>
           <Button fullWidth disabled>
             Disabled
           </Button>
         </Variant>
       </>
+    ),
+  },
+  {
+    name: 'GoogleButton',
+    group: 'ui',
+    description: 'Tombol masuk/daftar dengan Google sesuai pedoman brand Google: putih, logo G berwarna.',
+    demo: (
+      <Variant label="default · label custom · loading" stack>
+        <GoogleButton onClick={noop} />
+        <GoogleButton onClick={noop}>Daftar dengan Google</GoogleButton>
+        <GoogleButton loading>Menghubungkan…</GoogleButton>
+      </Variant>
+    ),
+  },
+  {
+    name: 'Divider',
+    group: 'ui',
+    description: 'Garis pemisah, opsional dengan teks di tengah ("atau").',
+    demo: (
+      <Variant label="dengan label · polos" stack>
+        <Divider label="atau masuk dengan email" />
+        <Divider />
+      </Variant>
     ),
   },
   {
@@ -603,16 +632,38 @@ export const specimens: Specimen[] = [
   {
     name: 'TextField',
     group: 'form',
-    description: 'Input teks dengan label tetap di atas (tanpa floating label) dan ikon trailing.',
+    description: 'Input teks dengan label tetap di atas (tanpa floating label), teks bantuan, dan pesan error.',
     demo: (
-      <Variant label="hint · trailingIcon · polos" stack>
-        <TextField
-          label="Catatan"
-          hint="(Boleh dikosongkan)"
-          trailingIcon="edit_note"
-          placeholder="Misal: Makan siang, bensin motor..."
-        />
-        <TextField label="Nama pemberi pinjaman" placeholder="Misal: Paman Budi" />
+      <>
+        <Variant label="hint · trailingIcon · polos" stack>
+          <TextField
+            label="Catatan"
+            hint="(Boleh dikosongkan)"
+            trailingIcon="edit_note"
+            placeholder="Misal: Makan siang, bensin motor..."
+          />
+          <TextField label="Nama pemberi pinjaman" placeholder="Misal: Paman Budi" />
+        </Variant>
+        <Variant label="helper · error" stack>
+          <TextField label="Email" type="email" placeholder="nama@email.com" helper="Kami kirim tautan konfirmasi ke sini." />
+          <TextField
+            label="Email"
+            type="email"
+            defaultValue="rian@email"
+            error="Format email belum benar, contoh: nama@email.com."
+          />
+        </Variant>
+      </>
+    ),
+  },
+  {
+    name: 'PasswordField',
+    group: 'form',
+    description: 'Input kata sandi dengan tombol lihat/sembunyikan, supaya user bisa memeriksa ketikannya.',
+    demo: (
+      <Variant label="helper · error" stack>
+        <PasswordField label="Kata sandi" autoComplete="new-password" helper="Minimal 8 karakter." />
+        <PasswordField label="Kata sandi" defaultValue="rahasia" error="Kata sandi minimal 8 karakter." />
       </Variant>
     ),
   },
@@ -650,6 +701,27 @@ export const specimens: Specimen[] = [
           </div>
           <BottomNav items={demoTabs} />
         </MobileShell>
+      </PreviewFrame>
+    ),
+  },
+  {
+    name: 'AuthLayout',
+    group: 'layout',
+    description: 'Kerangka layar Masuk/Daftar: logo, judul, konten, dan tautan di bagian bawah.',
+    demo: (
+      <PreviewFrame className="h-[520px]">
+        <AuthLayout
+          className="min-h-full shadow-none"
+          title="Masuk ke akunmu"
+          description="Pantau keuangan dan jadwal cicilanmu dengan tenang."
+          footer={<p className="text-center text-body-md text-on-surface-variant">Belum punya akun? Daftar sekarang</p>}
+        >
+          <GoogleButton onClick={noop} />
+          <Divider label="atau" />
+          <Card variant="tonal">
+            <p className="text-body-sm">Form di sini</p>
+          </Card>
+        </AuthLayout>
       </PreviewFrame>
     ),
   },

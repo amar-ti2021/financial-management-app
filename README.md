@@ -75,6 +75,31 @@ It uses the publishable key, so every query runs under RLS as the signed-in user
   migration, regenerate it from the `database/` folder:
   `npx supabase gen types typescript --linked --schema public > ../app/src/lib/database.types.ts`
 
+## Auth
+
+| Route | Screen |
+| --- | --- |
+| `/masuk` | Sign in: Google, or email + password |
+| `/daftar` | Sign up: Google, or name + email + password, then "Cek emailmu" |
+| `/auth/callback` | Return point for Google and email confirmation links |
+
+`src/auth/` holds the session context (`useAuth()`), the `GuestOnly` route guard, Indonesian
+error messages for Supabase error codes, and form validation. Sign-up passes `full_name`,
+which the `on_auth_user_created` trigger copies into `public.profiles`.
+
+Supabase dashboard settings the flows depend on:
+
+- **Authentication → URL Configuration:** Site URL = the Netlify production URL. Redirect URLs:
+  `http://localhost:5173/auth/callback`, `https://<site>.netlify.app/auth/callback` and, for
+  deploy previews, `https://*--<site>.netlify.app/auth/callback`. A redirect that is not listed
+  silently falls back to the Site URL.
+- **Authentication → Sign In / Providers → Google:** Client ID *and* Client Secret from the
+  Google Cloud OAuth client. In Google Cloud the authorized redirect URI is
+  `https://<project-ref>.supabase.co/auth/v1/callback`.
+- **Email confirmation** is on, so new email accounts must click the link before signing in.
+  Supabase's built-in mailer only delivers to the project's team members and is heavily
+  rate-limited; set up custom SMTP (Authentication → Emails → SMTP) before real users sign up.
+
 ## Deployment (Netlify)
 
 The Netlify project is connected to this GitHub repo, so Netlify builds and deploys on its own:
