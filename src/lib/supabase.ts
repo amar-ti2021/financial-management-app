@@ -4,11 +4,21 @@ import type { Database } from './database.types'
 const url = import.meta.env.VITE_SUPABASE_URL
 const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
-// Fail loudly at startup rather than with opaque 401s later.
-if (!url || !publishableKey) {
+function isHttpUrl(value: string) {
+  try {
+    return ['http:', 'https:'].includes(new URL(value).protocol)
+  } catch {
+    return false
+  }
+}
+
+// Fail loudly at startup rather than with opaque errors later. vite.config.ts runs the
+// same check at build time on Netlify, so this mainly guards local and other builds.
+if (!url || !publishableKey || !isHttpUrl(url)) {
   throw new Error(
-    'Supabase is not configured: set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY ' +
-      '(copy .env.example to .env locally; set them in Netlify environment variables for deploys).',
+    'Supabase is not configured: VITE_SUPABASE_URL must be the project URL (https://<ref>.supabase.co) ' +
+      'and VITE_SUPABASE_PUBLISHABLE_KEY the publishable key. Copy .env.example to .env locally; ' +
+      'on Netlify paste the actual values (not $VARIABLE references) in the environment variables.',
   )
 }
 

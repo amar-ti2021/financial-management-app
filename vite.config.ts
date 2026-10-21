@@ -29,9 +29,45 @@ function assertNoSupabaseSecrets(env: Record<string, string>) {
   }
 }
 
+function isHttpUrl(value: string) {
+  try {
+    return ['http:', 'https:'].includes(new URL(value).protocol)
+  } catch {
+    return false
+  }
+}
+
+// The app cannot start without these, so a deploy with a missing or malformed value is a
+// blank page. Netlify passes dashboard values through verbatim (only .env files expand
+// `$VAR` references), so a copied `$SUPABASE_URL` arrives literally. Required on Netlify;
+// GitHub Actions CI builds without Supabase settings, so there they are only checked if set.
+function assertSupabaseConfig(env: Record<string, string>, { required }: { required: boolean }) {
+  const url = env.VITE_SUPABASE_URL
+  const key = env.VITE_SUPABASE_PUBLISHABLE_KEY
+  if (!required && !url && !key) return
+
+  const problems: string[] = []
+  if (!url) problems.push('VITE_SUPABASE_URL is not set.')
+  else if (!isHttpUrl(url) || url.includes('$'))
+    problems.push(`VITE_SUPABASE_URL must be the project URL, e.g. https://<ref>.supabase.co (got "${url}").`)
+  if (!key) problems.push('VITE_SUPABASE_PUBLISHABLE_KEY is not set.')
+  else if (!key.startsWith('sb_publishable_') && jwtRole(key) !== 'anon')
+    problems.push('VITE_SUPABASE_PUBLISHABLE_KEY must be the publishable key (sb_publishable_…).')
+
+  if (problems.length > 0) {
+    throw new Error(
+      `Supabase settings are invalid:\n  - ${problems.join('\n  - ')}\n` +
+        'Paste the actual values (not $VARIABLE references) in Netlify → Project configuration → Environment variables.',
+    )
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  assertNoSupabaseSecrets(loadEnv(mode, process.cwd(), 'VITE_'))
+  const env = loadEnv(mode, process.cwd(), 'VITE_')
+  assertNoSupabaseSecrets(env)
+  // Netlify sets NETLIFY=true in its build environment.
+  assertSupabaseConfig(env, { required: process.env.NETLIFY === 'true' })
   return {
     plugins: [react(), tailwindcss()],
     resolve: {

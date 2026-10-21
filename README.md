@@ -69,8 +69,10 @@ It uses the publishable key, so every query runs under RLS as the signed-in user
   the browser bundle; `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` reference the
   plain values. Never give `SUPABASE_SECRET_KEY` a `VITE_` prefix.
 - **Netlify:** set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in Project
-  configuration → Environment variables, since `.env` is not committed. Without them the app
-  throws on startup as soon as a screen imports the client.
+  configuration → Environment variables, since `.env` is not committed. Paste the actual URL
+  and publishable key: `$VARIABLE` references only expand inside `.env` files. On Netlify,
+  `vite.config.ts` fails the build if either is missing or malformed, or if any `VITE_`
+  variable holds a secret key.
 - **Types:** `src/lib/database.types.ts` is generated from the cloud schema. After each
   migration, regenerate it from the `database/` folder:
   `npx supabase gen types typescript --linked --schema public > ../app/src/lib/database.types.ts`
