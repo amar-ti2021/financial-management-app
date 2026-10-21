@@ -1,26 +1,16 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
 import { useAuth } from '@/auth/context'
 import { TextField } from '@/components/form'
 import { MobileShell, PageHeader } from '@/components/layout'
-import { Avatar, Badge, Button, ChipGroup, IconButton, SectionHeader } from '@/components/ui'
+import { Avatar, Badge, ChipGroup, IconButton, SectionHeader } from '@/components/ui'
 import { supabase } from '@/lib/supabase'
 import { SpecimenCard } from './gallery/Specimen'
 import { groups, specimens, type GroupKey } from './gallery/specimens'
 
-/** Header slot: "Masuk" for guests, avatar + sign-out once signed in. */
+/** Header slot: avatar + sign-out (the catalog is behind RequireAuth). */
 function AccountAction() {
-  const navigate = useNavigate()
-  const { session, loading } = useAuth()
-  if (loading) return null
-
-  if (!session) {
-    return (
-      <Button size="sm" variant="secondary" icon="login" onClick={() => navigate('/masuk')}>
-        Masuk
-      </Button>
-    )
-  }
+  const { session } = useAuth()
+  if (!session) return null
 
   // Google fills name / avatar_url; email sign-up fills full_name.
   const meta = session.user.user_metadata

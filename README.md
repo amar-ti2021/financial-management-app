@@ -39,11 +39,12 @@ Import from the folder barrels: `import { Button, Card } from '@/components/ui'`
 
 ## Routes
 
-For now the app only routes the component catalog: `/` shows every component with its variants,
-and any other URL redirects there. Links inside the catalog previews are inert.
+Every page needs a signed-in user except the auth screens (see [Auth](#auth)). For now the app
+only routes the component catalog: `/` shows every component with its variants, and any other
+URL redirects there. Links inside the catalog previews are inert.
 
 The design screens are kept in `src/screens/` (and still type-checked) but are not routed.
-To show one again, add its route in `src/App.tsx`:
+To show one again, add its route in `src/App.tsx`, inside the `RequireAuth` group:
 
 | Design | Screen file | Former route |
 | --- | --- | --- |
@@ -86,8 +87,12 @@ It uses the publishable key, so every query runs under RLS as the signed-in user
 | `/auth/callback` | Return point for Google and email confirmation links |
 | `/ganti-kata-sandi` | Forced password change for accounts created with a temporary password |
 
-`src/auth/` holds the session context (`useAuth()`), the `GuestOnly` and `PasswordChangeGate`
-route guards, Indonesian error messages for Supabase error codes, and form validation. Sign-up
+`/masuk`, `/daftar` and `/auth/callback` are the only pages open to guests. Everything else sits
+behind `RequireAuth`, which sends guests to `/masuk` and, once they sign in, back to the page
+they asked for. The guards only hide the UI: data is protected by RLS in the database.
+
+`src/auth/` holds the session context (`useAuth()`), the `RequireAuth`, `GuestOnly` and
+`PasswordChangeGate` route guards, Indonesian error messages for Supabase error codes, and form validation. Sign-up
 passes `full_name`, which the `on_auth_user_created` trigger copies into `public.profiles`.
 
 ### Roles and temporary passwords

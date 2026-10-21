@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { signInWithGoogle } from '@/auth/actions'
 import { authErrorMessage } from '@/auth/errors'
 import { emailError, passwordError } from '@/auth/validation'
@@ -11,7 +11,6 @@ import { supabase } from '@/lib/supabase'
 type Field = 'email' | 'password'
 
 export function LoginScreen() {
-  const navigate = useNavigate()
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const [email, setEmail] = useState('')
@@ -31,13 +30,12 @@ export function LoginScreen() {
     if (found.password) return passwordRef.current?.focus()
 
     setPending('password')
+    // On success GuestOnly sees the new session and moves on to the page the user asked for.
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
     if (error) {
       setPending(null)
       setFormError(authErrorMessage(error))
-      return
     }
-    navigate('/', { replace: true })
   }
 
   const continueWithGoogle = async () => {

@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { authCallbackUrl, signInWithGoogle } from '@/auth/actions'
 import { authErrorMessage, EMAIL_TAKEN_MESSAGE } from '@/auth/errors'
 import { emailError, nameError, PASSWORD_MIN_LENGTH, passwordError } from '@/auth/validation'
@@ -20,7 +20,6 @@ const toLogin = (
 )
 
 export function RegisterScreen() {
-  const navigate = useNavigate()
   const nameRef = useRef<HTMLInputElement>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
@@ -56,7 +55,8 @@ export function RegisterScreen() {
     setPending(null)
 
     if (error) return setFormError(authErrorMessage(error))
-    if (data.session) return navigate('/', { replace: true })
+    // Signed in at once (email confirmation off): GuestOnly moves on to the app.
+    if (data.session) return
     // With email confirmation on, Supabase hides existing accounts by returning a user with no identities.
     if (data.user?.identities?.length === 0) return setFormError(EMAIL_TAKEN_MESSAGE)
     setSentTo(address)

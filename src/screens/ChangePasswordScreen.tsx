@@ -12,7 +12,7 @@ type Field = 'password' | 'confirmation'
 
 /** First sign-in with a temporary password: the user sets their own before using the app. */
 export function ChangePasswordScreen() {
-  const { session, loading } = useAuth()
+  const { session } = useAuth()
   const passwordRef = useRef<HTMLInputElement>(null)
   const confirmationRef = useRef<HTMLInputElement>(null)
   const [password, setPassword] = useState('')
@@ -60,9 +60,8 @@ export function ChangePasswordScreen() {
     await finish()
   }
 
-  if (loading) return null
-  if (!session) return <Navigate to="/masuk" replace />
-  if (!mustChangePassword(session)) return <Navigate to="/" replace />
+  // RequireAuth already holds back guests.
+  if (!session || !mustChangePassword(session)) return <Navigate to="/" replace />
 
   const email = session.user.email ?? ''
   const signOut = (
