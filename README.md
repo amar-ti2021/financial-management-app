@@ -60,6 +60,21 @@ To show one again, add its route in `src/App.tsx`:
 The tab screens shared a bottom nav through a layout route; restore it with
 `<><Outlet /><BottomNav items={tabs} /></>` around `/`, `/pinjaman`, `/kalkulator` and `/profil`.
 
+## Supabase
+
+The browser client lives in `src/lib/supabase.ts`: `import { supabase } from '@/lib/supabase'`.
+It uses the publishable key, so every query runs under RLS as the signed-in user.
+
+- **Env:** copy `.env.example` to `.env` and fill in the keys. Only `VITE_*` variables reach
+  the browser bundle; `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` reference the
+  plain values. Never give `SUPABASE_SECRET_KEY` a `VITE_` prefix.
+- **Netlify:** set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in Project
+  configuration → Environment variables, since `.env` is not committed. Without them the app
+  throws on startup as soon as a screen imports the client.
+- **Types:** `src/lib/database.types.ts` is generated from the cloud schema. After each
+  migration, regenerate it from the `database/` folder:
+  `npx supabase gen types typescript --linked --schema public > ../app/src/lib/database.types.ts`
+
 ## Deployment (Netlify)
 
 The Netlify project is connected to this GitHub repo, so Netlify builds and deploys on its own:
