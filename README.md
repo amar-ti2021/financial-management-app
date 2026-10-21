@@ -45,9 +45,15 @@ Every page needs a signed-in user except the auth screens (see [Auth](#auth)).
 | Route | Screen |
 | --- | --- |
 | `/` | Beranda (`DashboardScreen`): app bar and greeting so far; the bottom tabs don't link anywhere yet |
+| `/profil` | Profil & pengaturan akun (`ProfileScreen`), opened from the avatar on Beranda |
 | `/komponen` | Component catalog: every component with its variants (links in previews are inert) |
 
 Any other URL redirects to `/`.
+
+Profil shows what `public.profiles` and the session hold (name, photo, email, phone, member
+since, Mode Privasi Saldo, reminder channels, debt ratio limit). Values the app doesn't track
+yet are placeholders, with numbers at 0 (financial score, savings stats); rows whose page doesn't
+exist yet show a "segera hadir" toast. The Mode Privasi Saldo switch already saves `hide_balance`.
 
 The other design screens, sliced with mock data, live in `../screens/`, outside this repo and
 not type-checked. To build one out, copy it into `src/screens/`, replace the mock data, and add
@@ -63,10 +69,10 @@ its route in `src/App.tsx` inside the `RequireAuth` group:
 | detail_hutang_jadwal_12x_cicilan_lengkap | `DebtDetailScreen.tsx` | `/pinjaman/:id` |
 | kalkulator_pinjaman_simulasi_tabungan | `CalculatorScreen.tsx` | `/kalkulator` |
 | matriks_arus_kas_jadwal_bayar_hutang | `ProjectionScreen.tsx` | `/proyeksi` |
-| profil_pengaturan_akun | `ProfileScreen.tsx` | `/profil` |
+| profil_pengaturan_akun | `ProfileScreen.tsx` (mock version; now built in the app) | `/profil` |
 
-The tabs in `DashboardScreen` have no `to` yet, so `BottomNav` renders them without links. Once
-their pages exist, give each tab a `to` and move the nav into a layout route,
+The tabs (`src/screens/mainTabs.ts`) have no `to` yet, so `BottomNav` renders them without links.
+Once their pages exist, give each tab a `to` and move the nav into a layout route,
 `<><Outlet /><BottomNav items={tabs} /></>`, around `/`, `/pinjaman`, `/kalkulator` and `/profil`.
 `BrandHeader` links the avatar only when given `profileTo` (e.g. `/profil`).
 
@@ -98,7 +104,7 @@ It uses the publishable key, so every query runs under RLS as the signed-in user
 
 `/masuk`, `/daftar` and `/auth/callback` are the only pages open to guests. Everything else sits
 behind `RequireAuth`, which sends guests to `/masuk` and, once they sign in, back to the page
-they asked for. The guards only hide the UI: data is protected by RLS in the database.
+they asked for. After signing out, the next sign-in starts at Beranda. The guards only hide the UI: data is protected by RLS in the database.
 
 `src/auth/` holds the session context (`useAuth()`), the `RequireAuth`, `GuestOnly` and
 `PasswordChangeGate` route guards, Indonesian error messages for Supabase error codes, and form validation. Sign-up

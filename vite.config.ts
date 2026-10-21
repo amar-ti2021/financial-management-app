@@ -1,7 +1,11 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
+
+// Shown in Profil → Tentang Unbound.
+const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as { version: string }
 
 /** `role` claim of a legacy Supabase JWT key, if `value` is one. */
 function jwtRole(value: string) {
@@ -69,6 +73,7 @@ export default defineConfig(({ mode }) => {
   // Netlify sets NETLIFY=true in its build environment.
   assertSupabaseConfig(env, { required: process.env.NETLIFY === 'true' })
   return {
+    define: { __APP_VERSION__: JSON.stringify(version) },
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

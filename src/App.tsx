@@ -9,9 +9,10 @@ import { ChangePasswordScreen } from '@/screens/ChangePasswordScreen'
 import { ComponentGalleryScreen } from '@/screens/ComponentGalleryScreen'
 import { DashboardScreen } from '@/screens/DashboardScreen'
 import { LoginScreen } from '@/screens/LoginScreen'
+import { ProfileScreen } from '@/screens/ProfileScreen'
 import { RegisterScreen } from '@/screens/RegisterScreen'
 
-// Routed for now: Beranda, the component catalog and the auth screens. Add new pages
+// Routed for now: Beranda, Profil, the component catalog and the auth screens. Add new pages
 // inside RequireAuth.
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [
           { path: '/', element: <DashboardScreen /> },
+          { path: 'profil', element: <ProfileScreen /> },
           { path: 'komponen', element: <ComponentGalleryScreen /> },
           { path: 'ganti-kata-sandi', element: <ChangePasswordScreen /> },
           { path: '*', element: <Navigate to="/" replace /> },

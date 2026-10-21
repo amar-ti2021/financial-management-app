@@ -27,8 +27,9 @@ export function ProfileCard({ name, avatarSrc, verified, tagline, email, phone, 
           {tagline}
         </span>
       )}
-      <p className="mb-4 text-body-sm font-medium text-on-surface-variant">
-        {email} <span className="mx-1.5 opacity-40">•</span> {phone}
+      {/* A long email pushes the phone onto its own line, never splitting the number. */}
+      <p className="mb-4 text-body-sm font-medium wrap-anywhere text-on-surface-variant">
+        {email} <span className="mx-1.5 opacity-40">•</span> <span className="whitespace-nowrap">{phone}</span>
       </p>
       {onEdit && (
         <Button

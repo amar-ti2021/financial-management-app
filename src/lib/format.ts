@@ -27,8 +27,15 @@ export function formatCompact(value: number) {
   return String(value)
 }
 
+/** `+6281234568890` → `0812-****-8890`: enough to recognise your number, not to read it off the screen. */
+export function maskPhone(e164: string) {
+  const local = e164.startsWith('+62') ? `0${e164.slice(3)}` : e164
+  return `${local.slice(0, 4)}-****-${local.slice(-4)}`
+}
+
 const longDate = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
 const shortDate = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+const monthYear = new Intl.DateTimeFormat('id-ID', { month: 'short', year: 'numeric' })
 
 /** `15 November 2024` */
 export function formatDateLong(date: Date) {
@@ -38,6 +45,11 @@ export function formatDateLong(date: Date) {
 /** `25 Nov 2024` */
 export function formatDateShort(date: Date) {
   return shortDate.format(date)
+}
+
+/** `Jan 2024` */
+export function formatMonthYear(date: Date) {
+  return monthYear.format(date)
 }
 
 export function addDays(date: Date, days: number) {

@@ -5,6 +5,8 @@ export type AuthState = {
   session: Session | null
   /** True until Supabase has restored (or ruled out) a stored session. */
   loading: boolean
+  /** True once the session ended in this tab (signed out or expired), rather than never existing. */
+  signedOut: boolean
 }
 
 export const AuthContext = createContext<AuthState | null>(null)
