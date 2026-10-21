@@ -66,8 +66,9 @@ The Netlify project is connected to this GitHub repo, so Netlify builds and depl
 
 | Event | GitHub Actions (`.github/workflows/ci.yml`) | Netlify |
 | --- | --- | --- |
-| Pull request | lint + build check | deploy preview, linked on the PR |
-| Push to `main` | lint + build check | production deploy |
+| Pull request | lint + build, gitleaks (PR commits), Trivy | deploy preview, linked on the PR |
+| Push to `main` | lint + build, gitleaks (pushed commits), Trivy | production deploy |
+| Weekly (Mon 01:00 UTC) | all checks, gitleaks over full history | — |
 
 `netlify.toml` holds the build settings (`npm run lint && npm run build`, publish `dist`), the
 SPA fallback and long-term caching for `/assets/*`. `.nvmrc` sets the Node version for both
@@ -80,8 +81,23 @@ Netlify checks to confirm once (Project configuration → Build & deploy → Con
 - Base directory is empty (the repo root is the app); `netlify.toml` overrides the UI build
   command and publish directory.
 
-To block merging when checks fail, add the "Lint & build" check (and optionally Netlify's deploy
-preview check) as required in GitHub → Settings → Branches → branch protection for `main`.
+To block merging when checks fail, mark "Lint & build", "Secret scan (gitleaks)" and
+"Vulnerability scan (Trivy)" as required in GitHub → Settings → Branches → branch protection
+for `main`. Netlify deploys independently of these checks, so branch protection is what keeps
+a failing PR out of `main`.
+
+### Security scans
+
+- **gitleaks** scans the commits a push or PR adds (the full history on manual and weekly
+  runs) and fails on any secret. Output is redacted because the repo is public. If a secret
+  was committed, revoke it first; removing it from the code is not enough. For a confirmed
+  false positive, add its fingerprint (printed in the log) to `.gitleaksignore`.
+- **Trivy** scans `package-lock.json` (dev dependencies included), secrets and config files.
+  It fails on HIGH/CRITICAL findings that already have a fix. Usually `npm update` or a
+  version bump resolves it; to accept a risk, add the CVE ID to `.trivyignore` with a comment.
+- Both run as official release binaries pinned by version and SHA-256 in `ci.yml`, not as
+  third-party actions. To upgrade, change the version and copy the new hash from the
+  release's `*_checksums.txt`.
 
 ## Design notes
 
