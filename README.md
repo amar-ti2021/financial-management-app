@@ -22,7 +22,9 @@ src/
     finance/           domain cards (balance, debt, loan, projection, profile)
   screens/             one file per routed page, composed only from components
     gallery/           specimens for the component catalog (/komponen) — add an entry for every new component
-  hooks/               useProfile (signed-in user's profile row), useGoBack
+  auth/                session, route guards, Supabase error messages, form validation
+  profile/             ProfileProvider + useProfile (signed-in user's profile row), avatar upload
+  hooks/               useGoBack
   data/mock.ts         sample data from the designs (catalog only)
   lib/                 cn() (clsx + tailwind-merge), Rupiah/date formatting
 ```
@@ -46,6 +48,7 @@ Every page needs a signed-in user except the auth screens (see [Auth](#auth)).
 | --- | --- |
 | `/` | Beranda (`DashboardScreen`): app bar and greeting so far; the bottom tabs don't link anywhere yet |
 | `/profil` | Profil & pengaturan akun (`ProfileScreen`), opened from the avatar on Beranda |
+| `/profil/edit` | Edit Profil (`EditProfileScreen`): photo, name and phone; email is read-only |
 | `/komponen` | Component catalog: every component with its variants (links in previews are inert) |
 
 Any other URL redirects to `/`.
@@ -54,6 +57,12 @@ Profil shows what `public.profiles` and the session hold (name, photo, email, ph
 since, Mode Privasi Saldo, reminder channels, debt ratio limit). Values the app doesn't track
 yet are placeholders, with numbers at 0 (financial score, savings stats); rows whose page doesn't
 exist yet show a "segera hadir" toast. The Mode Privasi Saldo switch already saves `hide_balance`.
+
+`ProfileProvider` loads the profile row once and shares it, and `useProfile().update()` saves
+changes, so an edit shows on every page at once. Edit Profil stores the phone as E.164
+(`0812…` → `+62812…`); clearing it also turns WhatsApp reminders off, since the database
+requires a number for them. The email can't be changed yet: that needs confirmation emails,
+which need custom SMTP.
 
 The other design screens, sliced with mock data, live in `../screens/`, outside this repo and
 not type-checked. To build one out, copy it into `src/screens/`, replace the mock data, and add
@@ -89,6 +98,11 @@ It uses the publishable key, so every query runs under RLS as the signed-in user
   and publishable key: `$VARIABLE` references only expand inside `.env` files. On Netlify,
   `vite.config.ts` fails the build if either is missing or malformed, or if any `VITE_`
   variable holds a secret key.
+- **Profile photos:** public Storage bucket `avatars` (max 1 MB, images only). The app crops
+  each photo to 512×512 JPEG in the browser (which also strips EXIF data such as GPS location)
+  and uploads it to `avatars/<user id>/<random>.jpg`; users can only add, list and delete
+  files in their own folder. Replacing or removing a photo deletes the old file, though the
+  CDN may serve it for up to an hour. Deleting an auth user does not delete their files.
 - **Types:** `src/lib/database.types.ts` is generated from the cloud schema. After each
   migration, regenerate it from the `database/` folder:
   `npx supabase gen types typescript --linked --schema public > ../app/src/lib/database.types.ts`

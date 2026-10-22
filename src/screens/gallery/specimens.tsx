@@ -660,6 +660,16 @@ export const specimens: Specimen[] = [
             error="Format email belum benar, contoh: nama@email.com."
           />
         </Variant>
+        <Variant label="readOnly (bisa dibaca, tidak bisa diubah)" stack>
+          <TextField
+            label="Email"
+            type="email"
+            value="rian.pratama@email.com"
+            readOnly
+            trailingIcon="lock"
+            helper="Email dipakai untuk masuk dan belum bisa diganti."
+          />
+        </Variant>
       </>
     ),
   },

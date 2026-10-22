@@ -29,7 +29,15 @@ export function TaskHeader({ title, backLabel = 'Batal', onBack, action }: TaskH
       <h1 className="min-w-0 flex-1 truncate text-center text-headline-sm font-bold tracking-tight text-on-surface">
         {title}
       </h1>
-      <div className="flex shrink-0">{action}</div>
+      <div className="flex shrink-0">
+        {action ?? (
+          // Same width as the back button, so the title stays centred without an action.
+          <span aria-hidden className="invisible -mr-2 inline-flex items-center gap-1 px-2 text-label-lg">
+            <Icon name="arrow_back_ios_new" size={20} />
+            {backLabel}
+          </span>
+        )}
+      </div>
     </header>
   )
 }

@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useAuth } from '@/auth/context'
 import { FinancialScoreCard, ProfileCard } from '@/components/finance'
 import { BottomNav, MobileShell, PageHeader } from '@/components/layout'
 import { Badge, Icon, IconButton, MenuGroup, MenuItem, StatTile, Switch, Toast } from '@/components/ui'
-import { useProfile } from '@/hooks/useProfile'
 import { formatMonthYear, formatRupiah, maskPhone } from '@/lib/format'
 import { supabase } from '@/lib/supabase'
+import { useProfile } from '@/profile/context'
 import { mainTabs } from './mainTabs'
 
 // Not tracked yet: zero until the features that produce them exist.
@@ -25,8 +26,9 @@ function reminderChannels(app: boolean, whatsapp: boolean) {
  * doesn't track yet is a placeholder (numbers are 0), and rows without a page say "segera hadir".
  */
 export function ProfileScreen() {
+  const navigate = useNavigate()
   const { session } = useAuth()
-  const { profile, name, avatarUrl } = useProfile()
+  const { profile, name, avatarUrl, update } = useProfile()
   const [toast, setToast] = useState<{ message: string; icon: string } | null>(null)
   // The switch's value while a change is saved (or after it was); the profile row until then.
   const [hideBalance, setHideBalance] = useState<boolean | null>(null)
@@ -38,7 +40,7 @@ export function ProfileScreen() {
   const privacyMode = hideBalance ?? profile?.hide_balance ?? false
   const setPrivacyMode = async (next: boolean) => {
     setHideBalance(next)
-    const { error } = await supabase.from('profiles').update({ hide_balance: next }).eq('id', session.user.id)
+    const error = await update({ hide_balance: next })
     if (error) {
       setHideBalance(!next)
       setToast({ message: 'Pengaturan belum tersimpan. Coba lagi.', icon: 'error' })
@@ -63,7 +65,7 @@ export function ProfileScreen() {
           tagline={`Generasi Bebas Pinjol • ${memberSince}`}
           email={session.user.email ?? ''}
           phone={profile?.phone ? maskPhone(profile.phone) : 'No. HP belum diisi'}
-          onEdit={comingSoon}
+          onEdit={() => navigate('/profil/edit')}
         />
 
         <FinancialScoreCard score={financialScore} statusLabel="Belum Dinilai" onInfo={comingSoon}>

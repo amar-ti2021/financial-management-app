@@ -40,7 +40,7 @@ export function TextField({
       </label>
       <div
         className={cn(
-          'relative overflow-hidden rounded-2xl border bg-surface-container-lowest shadow-xs transition-all focus-within:ring-2',
+          'relative overflow-hidden rounded-2xl border bg-surface-container-lowest shadow-xs transition-all focus-within:ring-2 has-[input:read-only]:bg-surface-container-low has-[input:read-only]:shadow-none',
           error
             ? 'border-error focus-within:ring-error/20'
             : 'border-outline-variant/30 focus-within:border-primary focus-within:ring-primary-fixed-dim',
@@ -51,7 +51,7 @@ export function TextField({
           aria-invalid={error ? true : undefined}
           aria-describedby={message ? messageId : undefined}
           className={cn(
-            'min-h-14 w-full bg-transparent py-3.5 pl-4 text-body-md text-on-surface outline-none placeholder:text-outline',
+            'min-h-14 w-full bg-transparent py-3.5 pl-4 text-body-md text-on-surface outline-none placeholder:text-outline read-only:text-on-surface-variant',
             trailing ? 'pr-14' : trailingIcon ? 'pr-12' : 'pr-4',
           )}
           {...rest}

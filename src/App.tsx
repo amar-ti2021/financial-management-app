@@ -4,16 +4,18 @@ import { AuthProvider } from '@/auth/AuthProvider'
 import { GuestOnly } from '@/auth/GuestOnly'
 import { PasswordChangeGate } from '@/auth/PasswordChangeGate'
 import { RequireAuth } from '@/auth/RequireAuth'
+import { ProfileProvider } from '@/profile/ProfileProvider'
 import { AuthCallbackScreen } from '@/screens/AuthCallbackScreen'
 import { ChangePasswordScreen } from '@/screens/ChangePasswordScreen'
 import { ComponentGalleryScreen } from '@/screens/ComponentGalleryScreen'
 import { DashboardScreen } from '@/screens/DashboardScreen'
+import { EditProfileScreen } from '@/screens/EditProfileScreen'
 import { LoginScreen } from '@/screens/LoginScreen'
 import { ProfileScreen } from '@/screens/ProfileScreen'
 import { RegisterScreen } from '@/screens/RegisterScreen'
 
-// Routed for now: Beranda, Profil, the component catalog and the auth screens. Add new pages
-// inside RequireAuth.
+// Routed for now: Beranda, Profil and Edit Profil, the component catalog and the auth screens.
+// Add new pages inside RequireAuth.
 const router = createBrowserRouter([
   {
     // Accounts on a temporary password are held at /ganti-kata-sandi until they change it.
@@ -34,6 +36,7 @@ const router = createBrowserRouter([
         children: [
           { path: '/', element: <DashboardScreen /> },
           { path: 'profil', element: <ProfileScreen /> },
+          { path: 'profil/edit', element: <EditProfileScreen /> },
           { path: 'komponen', element: <ComponentGalleryScreen /> },
           { path: 'ganti-kata-sandi', element: <ChangePasswordScreen /> },
           { path: '*', element: <Navigate to="/" replace /> },
@@ -46,7 +49,9 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <ProfileProvider>
+        <RouterProvider router={router} />
+      </ProfileProvider>
     </AuthProvider>
   )
 }

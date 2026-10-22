@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '@/auth/context'
 import { BottomNav, BrandHeader, MobileShell } from '@/components/layout'
 import { IconButton, PageIntro, Toast } from '@/components/ui'
-import { useProfile } from '@/hooks/useProfile'
+import { useProfile } from '@/profile/context'
 import { mainTabs } from './mainTabs'
 
 /** Beranda. For now only the app bar and the greeting; the cards follow with their features. */

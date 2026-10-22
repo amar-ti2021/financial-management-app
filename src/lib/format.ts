@@ -27,9 +27,14 @@ export function formatCompact(value: number) {
   return String(value)
 }
 
+/** `+6281234568890` → `081234568890`, the way Indonesians write their number. */
+export function phoneToLocal(e164: string) {
+  return e164.startsWith('+62') ? `0${e164.slice(3)}` : e164
+}
+
 /** `+6281234568890` → `0812-****-8890`: enough to recognise your number, not to read it off the screen. */
 export function maskPhone(e164: string) {
-  const local = e164.startsWith('+62') ? `0${e164.slice(3)}` : e164
+  const local = phoneToLocal(e164)
   return `${local.slice(0, 4)}-****-${local.slice(-4)}`
 }
 
